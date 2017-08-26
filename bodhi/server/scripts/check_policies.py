@@ -41,9 +41,12 @@ def check():
         .filter(models.Update.status.in_(
                 [models.UpdateStatus.pending, models.UpdateStatus.testing]))
     for update in updates:
+        decision_context = u'bodhi_update_push_testing'
+        if update.status == models.UpdateStatus.testing:
+            decision_context = u'bodhi_update_push_stable'
         data = {
             'product_version': update.product_version,
-            'decision_context': u'bodhi_update_push_stable',
+            'decision_context': decision_context,
             'subject': update.greenwave_subject
         }
         api_url = '{}/decision'.format(
